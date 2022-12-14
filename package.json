@@ -1,7 +1,7 @@
 {
   "name": "pg_music_library",
   "version": "1.0.0",
-  "description": "",
+  "description": "Build a music library with postgres and [he node `pg` module](https://node-postgres.com/)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,6 +11,16 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "express": "^4.17.1"
-  }
+    "express": "^4.17.1",
+    "pg": "^8.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/john-maybee/pg_starting_repo.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/john-maybee/pg_starting_repo/issues"
+  },
+  "homepage": "https://github.com/john-maybee/pg_starting_repo#readme"
 }
