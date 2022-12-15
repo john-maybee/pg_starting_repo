@@ -9,21 +9,31 @@ function onReady() {
 }
 
 function handleRankUp() {
-    console.log('rank up');
+    const id = $(this).parent().parent().data('id');
+    console.log("rank up");
+    $.ajax({
+        type: 'PUT',
+        url: `/musicLibrary/rank/${id}`,
+        data: {direction: 'up'},
+    }).then(function() {
+        getSongs();
+    }).catch(function(error) {
+        console.log('error w putting', error);
+    })
 }
 
 function handleRankDown() {
-    console.log('rank down');
+    console.log("rank down");
 }
 
-function handleDelete() {
-    const id = $(this).data('id');
+function handleDelete(){
+    const id = $(this).parent().parent().data('id');
     $.ajax({
         type: 'DELETE',
         url: `/musicLibrary/${id}`
-    }).then(function () {
+    }).then(function() {
         getSongs();
-    }).catch(function (error) {
+    }).catch(function(error) {
         console.log('error with deleting, ', error);
     })
 }
@@ -39,21 +49,17 @@ function getSongs() {
         // append data to the DOM
         for (let i = 0; i < response.length; i++) {
             $('#songsTableBody').append(`
-                <tr>
+                <tr data-id=${response[i].id}>
                     <td>${response[i].artist}</td>
                     <td>${response[i].track}</td>
                     <td>${response[i].rank}</td>
                     <td>${response[i].published}</td>
                     <td>
-                        <button class="rank-up">
-                            up
-                        </button>
-                        <button class="rank-down">
-                            down
-                        </button>
+                        <button class="rank-up">up</button>
+                        <button class="rank-down">down</button>
                     </td>
                     <td>
-                        <button class="delete" data-id=${response[i].id}>
+                        <button class="delete">
                             delete
                         </button>
                     </td>
@@ -76,7 +82,7 @@ function postSong() {
         data: payloadObject
     }).then( function (response) {
         $('#artist').val(''),
-        $('#track').val(''),    
+        $('#track').val(''),
         $('#rank').val(''),
         $('#published').val('')
         getSongs();

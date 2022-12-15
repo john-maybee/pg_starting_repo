@@ -3,7 +3,21 @@ const router = express.Router();
 const pool = require('../modules/pool');
 
 router.get('/', (req, res) => {
-    let queryText = 'SELECT * from songs';
+    let queryText = 'SELECT * from songs ORDER BY "id" asc;';
+    pool.query(queryText)
+    .then((result) => {
+        console.log('results from DB', result);
+        res.send(result.rows);
+    })
+    .catch((error) => {
+        console.log('error making a query', error);
+        res.sendStatus(500);
+    })
+});
+
+router.get('/:id', (req, res) => {
+    console.log("Hello from get request!", req.params.id);
+    const queryText = `SELECT * from songs WHERE id = ${req.params.id};`;
     pool.query(queryText)
     .then((result) => {
         console.log('results from DB', result);
@@ -18,30 +32,12 @@ router.get('/', (req, res) => {
 
 
 router.delete('/:id', (req, res) => {
-    console.log("Hello from delete request!", req.params.id)
+    console.log("Hello from delete request!", req.params.id);
     const queryText = `DELETE from songs WHERE id = ${req.params.id};`;
     pool.query(queryText)
     .then((result) => {
         console.log(result);
-        res.send(204);
-    })
-    .catch((error) => {
-        console.log('error making a query', error);
-        res.sendStatus(500);
-    });
-});
-
-router.get('/:artist', (req, res) => {
-    `SELECT * from songs WHERE artist = ${req.params.artist}`;
-});
-
-router.get('/:id', (req, res) => {
-    console.log("Hello from the request!", req.params.id)
-    const queryText = `SELECT * from songs WHERE id = ${req.params.id};`;
-    pool.query(queryText)
-    .then((result) => {
-        console.log('results from DB', result);
-        res.send(result.rows);
+        res.sendStatus(202);
     })
     .catch((error) => {
         console.log('error making a query', error);
@@ -55,8 +51,6 @@ router.post('/', (req, res) => {
         INSERT INTO "songs" ("rank", "artist", "track", "published")
         VALUES ($1, $2, $3, $4);
     `;
-
-    // ${newSong.rank}, '${newSong.artist}', '${newSong.track}', '${newSong.published}
     pool.query(queryText, [newSong.rank, newSong.artist, newSong.track, newSong.published])
     .then((result) => {
         console.log('result', result);
@@ -73,13 +67,11 @@ router.put('/rank/:id', (req, res) => {
     let queryText = '';
     if(direction == 'up') {
         // increase rank
-        queryText = `UPDATE "songs" SET "rank"=rank + 1 WHERE "id"= ${req.params.id};`;
-    } 
-    else if (direction == 'down') {
+        queryText = `UPDATE "songs" SET "rank"=rank + 1 WHERE "id"=${req.params.id};`;
+    } else if (direction == 'down'){
         // decrease rank
-        queryText = `UPDATE "songs" SET "rank"=rank - 1 WHERE "id"= ${req.params.id};`;
-    } 
-    else {
+        queryText = `UPDATE "songs" SET "rank"=rank - 1 WHERE "id"=${req.params.id};`;
+    } else {
         res.sendStatus(500);
         return;
     }
@@ -92,7 +84,8 @@ router.put('/rank/:id', (req, res) => {
         console.log(error);
         res.sendStatus(500);
     })
-});
+})
+
 
 module.exports = router;
 
