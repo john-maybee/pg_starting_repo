@@ -18,4 +18,4 @@ pool.on('error', (error) => {
     console.log('error with postgres pool, ', error);
 });
 
-module.exports = Pool;
+module.exports = pool;
